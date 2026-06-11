@@ -122,7 +122,6 @@ export class GroqLLMClient implements LLMClient {
     const fallbackModels = [
       "llama-3.3-70b-versatile",
       "llama-3.1-8b-instant",
-      "gemma2-9b-it",
       "mixtral-8x7b-32768"
     ];
 
@@ -156,7 +155,9 @@ export class GroqLLMClient implements LLMClient {
         clearTimeout(timeout);
 
         if (!response.ok) {
-          const isTransient = response.status === 429 || (response.status >= 500 && response.status <= 504);
+          const isModelSpecificError = response.status === 400 || response.status === 404 || response.status === 403 || response.status === 429;
+          const isTransient = isModelSpecificError || (response.status >= 500 && response.status <= 504);
+
           if (isTransient && attempt < maxRetries - 1) {
             let delay = initialDelayMs * Math.pow(2, attempt);
             const retryAfterHeader = response.headers.get("retry-after");
@@ -167,10 +168,10 @@ export class GroqLLMClient implements LLMClient {
               }
             }
 
-            if (response.status === 429 && currentModelIndex < modelChain.length - 1) {
+            if (isModelSpecificError && currentModelIndex < modelChain.length - 1) {
               currentModelIndex += 1;
               const nextModel = modelChain[currentModelIndex];
-              console.warn(`Groq request rate-limited (429) for model ${currentModel}. Falling back to ${nextModel} immediately...`);
+              console.warn(`Groq request failed with status ${response.status} for model ${currentModel}. Falling back to ${nextModel} immediately...`);
               currentModel = nextModel;
               delay = 100; // Immediate retry on different model
             } else {
