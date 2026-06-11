@@ -118,6 +118,8 @@ export class GroqLLMClient implements LLMClient {
   ): Promise<string> {
     const maxRetries = 3;
     const initialDelayMs = 1000;
+    const fallbackModel = "llama-3.1-8b-instant";
+    let currentModel = this.model;
 
     for (let attempt = 0; attempt < maxRetries; attempt += 1) {
       const controller = new AbortController();
@@ -131,7 +133,7 @@ export class GroqLLMClient implements LLMClient {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: this.model,
+            model: currentModel,
             messages,
             temperature,
             n: 1,
@@ -154,14 +156,22 @@ export class GroqLLMClient implements LLMClient {
                 delay = parsed * 1000;
               }
             }
-            console.warn(`Groq request failed with ${response.status}. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+
+            if (response.status === 429 && currentModel !== fallbackModel) {
+              console.warn(`Groq request rate-limited (429) for model ${currentModel}. Falling back to ${fallbackModel} immediately...`);
+              currentModel = fallbackModel;
+              delay = 100; // Immediate retry on different model
+            } else {
+              console.warn(`Groq request failed with ${response.status} for model ${currentModel}. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+            }
+
             await new Promise((resolve) => setTimeout(resolve, delay));
             continue;
           }
 
           throw new LLMError(
             "LLM_HTTP_ERROR",
-            `Groq request failed with status ${response.status}.`,
+            `Groq request failed with status ${response.status} for model ${currentModel}.`,
             { status: response.status, details: text },
           );
         }
