@@ -1,0 +1,27 @@
+Backend Software Engineer — Horizon Analytics
+
+About Horizon Analytics
+Horizon Analytics helps enterprise teams turn product data into actionable insights. We are hiring a backend engineer to grow our API platform.
+
+Responsibilities
+- Design and implement scalable REST and GraphQL APIs
+- Build services in Node.js or Python with PostgreSQL
+- Improve reliability, observability, and performance of production systems
+- Collaborate with frontend engineers and product managers
+- Write unit and integration tests for critical paths
+- Participate in code reviews and on-call rotation
+
+Required Qualifications
+- 2+ years of professional software development experience
+- Strong experience with Node.js or Python
+- Experience with relational databases (PostgreSQL preferred)
+- Familiarity with Docker and CI/CD pipelines
+- Understanding of API design and authentication patterns
+
+Preferred Qualifications
+- Experience with GraphQL
+- Exposure to AWS or GCP
+- Experience with message queues (Kafka, RabbitMQ)
+- Kubernetes experience
+
+Seniority: Mid-level

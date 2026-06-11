@@ -1,0 +1,296 @@
+{
+  "id": "run_mock_demo",
+  "createdAt": "2026-06-10T12:00:00.000Z",
+  "status": "complete",
+  "resume": {
+    "contact": {
+      "name": "Alex Rivera",
+      "email": "alex.rivera@email.com",
+      "phone": "(555) 234-7890",
+      "location": "Austin, TX",
+      "linkedin": "linkedin.com/in/alexrivera"
+    },
+    "summary": "Software engineer with 3 years building web applications and REST APIs. Experienced with JavaScript, Python, and SQL. Interested in backend systems and developer tooling.",
+    "skills": [
+      "JavaScript",
+      "TypeScript",
+      "Python",
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "Git",
+      "Docker",
+      "REST APIs",
+      "unit testing"
+    ],
+    "experience": [
+      {
+        "company": "TechStart Inc",
+        "title": "Software Engineer",
+        "startDate": "Jan 2022",
+        "endDate": "Present",
+        "bullets": [
+          "Built features for a customer dashboard used by 5,000+ users",
+          "Wrote REST API endpoints in Node.js for billing and account management",
+          "Fixed bugs and improved page load times for key workflows",
+          "Collaborated with product and QA on sprint planning"
+        ]
+      },
+      {
+        "company": "Campus IT Services",
+        "title": "Student Developer",
+        "startDate": "Jun 2020",
+        "endDate": "Dec 2021",
+        "bullets": [
+          "Developed internal tools with Python and Flask",
+          "Created scripts to automate data cleanup tasks",
+          "Documented deployment steps for team handoffs"
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "name": "TaskFlow",
+        "description": "Personal task tracking app",
+        "bullets": [
+          "Built a task tracking app with React and Express",
+          "Used PostgreSQL for data storage",
+          "Deployed on a Linux VPS with Docker"
+        ],
+        "technologies": ["React", "Express", "PostgreSQL", "Docker"]
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Texas at Austin",
+        "degree": "B.S. Computer Science",
+        "field": "",
+        "endDate": "2021"
+      }
+    ],
+    "certifications": []
+  },
+  "jobDescription": {
+    "jobTitle": "Backend Software Engineer",
+    "company": "Horizon Analytics",
+    "requiredSkills": [
+      "Node.js",
+      "Python",
+      "PostgreSQL",
+      "REST APIs",
+      "Docker",
+      "CI/CD",
+      "API design",
+      "unit testing"
+    ],
+    "preferredSkills": [
+      "GraphQL",
+      "AWS",
+      "GCP",
+      "Kafka",
+      "RabbitMQ",
+      "Kubernetes"
+    ],
+    "responsibilities": [
+      "Design and implement scalable REST and GraphQL APIs",
+      "Build services in Node.js or Python with PostgreSQL",
+      "Improve reliability, observability, and performance of production systems",
+      "Collaborate with frontend engineers and product managers",
+      "Write unit and integration tests for critical paths",
+      "Participate in code reviews and on-call rotation"
+    ],
+    "qualifications": [
+      "2+ years of professional software development experience",
+      "Strong experience with Node.js or Python",
+      "Experience with relational databases (PostgreSQL preferred)",
+      "Familiarity with Docker and CI/CD pipelines",
+      "Understanding of API design and authentication patterns"
+    ],
+    "tools": ["Node.js", "Python", "PostgreSQL", "Docker", "GraphQL"],
+    "keywords": [
+      "backend",
+      "REST",
+      "GraphQL",
+      "PostgreSQL",
+      "observability",
+      "scalable APIs",
+      "integration tests"
+    ],
+    "seniorityLevel": "Mid-level",
+    "domainSignals": ["enterprise analytics", "API platform", "production systems"]
+  },
+  "originalScore": {
+    "overallScore": 62,
+    "skillCoverageScore": 58,
+    "responsibilityAlignmentScore": 55,
+    "keywordScore": 48,
+    "seniorityScore": 72,
+    "criticalMissingRequirements": [
+      "GraphQL",
+      "CI/CD pipelines",
+      "observability / production reliability emphasis"
+    ],
+    "explanation": "Your resume shows solid Node.js, Python, PostgreSQL, and REST API experience, but the job description emphasizes GraphQL, CI/CD, and production observability more strongly than your current bullets reflect."
+  },
+  "tailoredScore": {
+    "overallScore": 78,
+    "skillCoverageScore": 74,
+    "responsibilityAlignmentScore": 80,
+    "keywordScore": 76,
+    "seniorityScore": 72,
+    "criticalMissingRequirements": ["GraphQL", "Kubernetes"],
+    "explanation": "After tailoring, your bullets better highlight API work, PostgreSQL usage, Docker deployment, and testing — aligning with backend platform responsibilities. GraphQL and Kubernetes remain gaps you should address honestly."
+  },
+  "gaps": {
+    "gaps": [
+      {
+        "name": "GraphQL",
+        "importance": "high",
+        "jdEvidence": "Preferred: Experience with GraphQL; Responsibilities include GraphQL APIs",
+        "resumeEvidence": "Not mentioned in skills or experience",
+        "suggestedAction": "Add only if you have used GraphQL in a project or course; otherwise prepare to discuss learning path in interview",
+        "canSafelyAdd": false
+      },
+      {
+        "name": "CI/CD pipelines",
+        "importance": "high",
+        "jdEvidence": "Required: Familiarity with Docker and CI/CD pipelines",
+        "resumeEvidence": "Docker mentioned in projects; CI/CD not explicitly stated",
+        "suggestedAction": "Mention in skills section if familiar; add a bullet about automated deployments only if true",
+        "canSafelyAdd": false
+      },
+      {
+        "name": "Observability / on-call",
+        "importance": "medium",
+        "jdEvidence": "Improve reliability, observability, and performance; on-call rotation",
+        "resumeEvidence": "Performance improvements mentioned briefly without observability tooling",
+        "suggestedAction": "Expand performance bullet with monitoring tools you have actually used",
+        "canSafelyAdd": false
+      },
+      {
+        "name": "Kubernetes",
+        "importance": "low",
+        "jdEvidence": "Preferred: Kubernetes experience",
+        "resumeEvidence": "Not mentioned",
+        "suggestedAction": "Leave out if not true; optional stretch goal for learning",
+        "canSafelyAdd": false
+      }
+    ]
+  },
+  "tailored": {
+    "tailoredSummary": "Backend-leaning software engineer with 3+ years building REST APIs, Node.js services, and PostgreSQL-backed applications. Experienced shipping production features, improving performance, and collaborating across product and engineering teams.",
+    "tailoredSkills": [
+      "Node.js",
+      "Python",
+      "PostgreSQL",
+      "REST APIs",
+      "Docker",
+      "TypeScript",
+      "unit testing",
+      "Git",
+      "JavaScript",
+      "React"
+    ],
+    "tailoredExperience": [
+      {
+        "company": "TechStart Inc",
+        "title": "Software Engineer",
+        "bullets": [
+          {
+            "original": "Built features for a customer dashboard used by 5,000+ users",
+            "tailored": "Delivered backend-backed dashboard features serving 5,000+ users, partnering with frontend engineers on API contracts and release planning",
+            "changeReason": "Highlights cross-functional collaboration and backend contribution expected in the JD",
+            "keywordsAddressed": ["collaborate", "API"],
+            "confidence": "high",
+            "riskFlag": null
+          },
+          {
+            "original": "Wrote REST API endpoints in Node.js for billing and account management",
+            "tailored": "Designed and implemented REST API endpoints in Node.js for billing and account management, using PostgreSQL for persistent storage",
+            "changeReason": "Adds PostgreSQL explicitly where the original work already implied database usage",
+            "keywordsAddressed": ["REST", "Node.js", "PostgreSQL", "API design"],
+            "confidence": "medium",
+            "riskFlag": "Verify PostgreSQL was used for these endpoints before using this wording"
+          },
+          {
+            "original": "Fixed bugs and improved page load times for key workflows",
+            "tailored": "Improved performance of key customer workflows by diagnosing bottlenecks and reducing page load times through targeted backend and query fixes",
+            "changeReason": "Aligns with JD emphasis on reliability and performance without inventing observability tools",
+            "keywordsAddressed": ["performance", "production systems"],
+            "confidence": "high",
+            "riskFlag": null
+          },
+          {
+            "original": "Collaborated with product and QA on sprint planning",
+            "tailored": "Collaborated with product managers and QA during sprint planning, code reviews, and release validation for customer-facing features",
+            "changeReason": "Mirrors JD language on collaboration and code reviews",
+            "keywordsAddressed": ["collaborate", "code reviews"],
+            "confidence": "high",
+            "riskFlag": null
+          }
+        ]
+      },
+      {
+        "company": "Campus IT Services",
+        "title": "Student Developer",
+        "bullets": [
+          {
+            "original": "Developed internal tools with Python and Flask",
+            "tailored": "Built internal tools with Python and Flask, exposing REST endpoints consumed by campus operations staff",
+            "changeReason": "Frames Flask work as API development relevant to backend role",
+            "keywordsAddressed": ["Python", "REST"],
+            "confidence": "high",
+            "riskFlag": null
+          },
+          {
+            "original": "Created scripts to automate data cleanup tasks",
+            "tailored": "Automated recurring data cleanup tasks with Python scripts, improving data quality for downstream reporting tools",
+            "changeReason": "Clarifies impact while staying truthful to automation work",
+            "keywordsAddressed": ["Python"],
+            "confidence": "high",
+            "riskFlag": null
+          },
+          {
+            "original": "Documented deployment steps for team handoffs",
+            "tailored": "Documented deployment and handoff procedures for internal tools, supporting maintainability across team transitions",
+            "changeReason": "Connects documentation to production maintainability without claiming CI/CD ownership",
+            "keywordsAddressed": ["production systems"],
+            "confidence": "medium",
+            "riskFlag": null
+          }
+        ]
+      }
+    ],
+    "tailoredProjects": [
+      {
+        "name": "TaskFlow",
+        "bullets": [
+          {
+            "original": "Built a task tracking app with React and Express",
+            "tailored": "Built a full-stack task tracking app with React frontend and Express REST API backend",
+            "changeReason": "Emphasizes API layer for backend-focused role",
+            "keywordsAddressed": ["REST", "API"],
+            "confidence": "high",
+            "riskFlag": null
+          },
+          {
+            "original": "Used PostgreSQL for data storage",
+            "tailored": "Modeled application data in PostgreSQL and implemented CRUD API operations with validation and unit tests",
+            "changeReason": "Highlights database and testing keywords from JD",
+            "keywordsAddressed": ["PostgreSQL", "unit testing"],
+            "confidence": "medium",
+            "riskFlag": "Confirm unit tests exist before claiming"
+          },
+          {
+            "original": "Deployed on a Linux VPS with Docker",
+            "tailored": "Containerized the application with Docker and deployed to a Linux VPS",
+            "changeReason": "Minor rewording for clarity; Docker already present in original",
+            "keywordsAddressed": ["Docker"],
+            "confidence": "high",
+            "riskFlag": null
+          }
+        ]
+      }
+    ]
+  }
+}
