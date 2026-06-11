@@ -116,76 +116,106 @@ export class GroqLLMClient implements LLMClient {
     messages: GroqChatMessage[],
     temperature: number,
   ): Promise<string> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    const maxRetries = 3;
+    const initialDelayMs = 1000;
 
-    try {
-      const response = await fetch(this.baseUrl, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: this.model,
-          messages,
-          temperature,
-          n: 1,
-          response_format: { type: "json_object" },
-        }),
-        signal: controller.signal,
-      });
+    for (let attempt = 0; attempt < maxRetries; attempt += 1) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
 
-      const text = await response.text();
-
-      if (!response.ok) {
-        throw new LLMError(
-          "LLM_HTTP_ERROR",
-          `Groq request failed with status ${response.status}.`,
-          { status: response.status, details: text },
-        );
-      }
-
-      let json: unknown;
       try {
-        json = JSON.parse(text);
+        const response = await fetch(this.baseUrl, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: this.model,
+            messages,
+            temperature,
+            n: 1,
+            response_format: { type: "json_object" },
+          }),
+          signal: controller.signal,
+        });
+
+        const text = await response.text();
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+          const isTransient = response.status === 429 || (response.status >= 500 && response.status <= 504);
+          if (isTransient && attempt < maxRetries - 1) {
+            let delay = initialDelayMs * Math.pow(2, attempt);
+            const retryAfterHeader = response.headers.get("retry-after");
+            if (retryAfterHeader) {
+              const parsed = parseInt(retryAfterHeader, 10);
+              if (!isNaN(parsed)) {
+                delay = parsed * 1000;
+              }
+            }
+            console.warn(`Groq request failed with ${response.status}. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+            await new Promise((resolve) => setTimeout(resolve, delay));
+            continue;
+          }
+
+          throw new LLMError(
+            "LLM_HTTP_ERROR",
+            `Groq request failed with status ${response.status}.`,
+            { status: response.status, details: text },
+          );
+        }
+
+        let json: unknown;
+        try {
+          json = JSON.parse(text);
+        } catch (error) {
+          throw new LLMError("LLM_PARSE_ERROR", "Groq returned invalid JSON.", {
+            details: text,
+            cause: error,
+          });
+        }
+
+        const parsed = GroqChatResponseSchema.safeParse(json);
+        if (!parsed.success) {
+          throw new LLMError(
+            "VALIDATION_ERROR",
+            "Groq response did not match the expected chat shape.",
+            { details: parsed.error.flatten() },
+          );
+        }
+
+        const content = parsed.data.choices?.[0]?.message?.content;
+        if (!content) {
+          throw new LLMError("LLM_PARSE_ERROR", "Groq returned an empty reply.", {
+            details: parsed.data,
+          });
+        }
+
+        return content;
       } catch (error) {
-        throw new LLMError("LLM_PARSE_ERROR", "Groq returned invalid JSON.", {
-          details: text,
+        clearTimeout(timeout);
+        if (error instanceof LLMError) throw error;
+
+        const isAbort = error instanceof DOMException && error.name === "AbortError";
+        if (attempt < maxRetries - 1) {
+          const delay = initialDelayMs * Math.pow(2, attempt);
+          console.warn(`Groq network request failed/timed out. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`, error);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          continue;
+        }
+
+        if (isAbort) {
+          throw new LLMError("LLM_HTTP_ERROR", "Groq request timed out.", {
+            cause: error,
+          });
+        }
+        throw new LLMError("LLM_HTTP_ERROR", "Groq request failed.", {
           cause: error,
         });
       }
-
-      const parsed = GroqChatResponseSchema.safeParse(json);
-      if (!parsed.success) {
-        throw new LLMError(
-          "VALIDATION_ERROR",
-          "Groq response did not match the expected chat shape.",
-          { details: parsed.error.flatten() },
-        );
-      }
-
-      const content = parsed.data.choices?.[0]?.message?.content;
-      if (!content) {
-        throw new LLMError("LLM_PARSE_ERROR", "Groq returned an empty reply.", {
-          details: parsed.data,
-        });
-      }
-
-      return content;
-    } catch (error) {
-      if (error instanceof LLMError) throw error;
-      if (error instanceof DOMException && error.name === "AbortError") {
-        throw new LLMError("LLM_HTTP_ERROR", "Groq request timed out.", {
-          cause: error,
-        });
-      }
-      throw new LLMError("LLM_HTTP_ERROR", "Groq request failed.", {
-        cause: error,
-      });
-    } finally {
-      clearTimeout(timeout);
     }
+    throw new LLMError("LLM_HTTP_ERROR", "Groq request failed after all retries.");
   }
 }
 
