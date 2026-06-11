@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ExportConfirmModal } from "@/components/ExportConfirmModal";
 import type { TailoringRun } from "@/lib/schemas";
+import { saveTailoringRun } from "@/lib/session";
 
 interface PDFExportButtonProps {
   run: TailoringRun;
@@ -51,11 +52,11 @@ export function PDFExportButton({ run }: PDFExportButtonProps) {
       );
       if (openFallback) {
         try {
-          const base64Run = btoa(unescape(encodeURIComponent(JSON.stringify(run))));
-          window.open(`/export/comparison/${run.id}?run=${base64Run}`, "_blank");
-        } catch (encodeErr) {
-          console.error("Failed to encode run for fallback printing", encodeErr);
-          alert("Could not open print page due to encoding error.");
+          saveTailoringRun(run);
+          window.open(`/export/comparison/${run.id}`, "_blank");
+        } catch (err) {
+          console.error("Failed to save run or open fallback printing", err);
+          alert("Could not open print page.");
         }
       }
     } finally {

@@ -1,27 +1,55 @@
+"use client";
+
+import React, { use, useEffect, useState } from "react";
 import ComparisonTemplate from "@/lib/pdf/comparison-template";
 import type { TailoringRun } from "@/lib/schemas";
+import { loadTailoringRun } from "@/lib/session";
 
 /**
  * Print-friendly comparison view for PDF export (Phase 3).
- * Server-renders the comparison template for browser-based PDF generation.
+ * Client-renders the comparison template, loading the run data from sessionStorage or a base64 query parameter.
  */
-export default async function ComparisonExportPage({
+export default function ComparisonExportPage({
   params,
   searchParams,
 }: {
   params: Promise<{ runId: string }>;
   searchParams: Promise<{ run?: string }>;
 }) {
-  const { runId } = await params;
-  const sp = await searchParams;
+  const { runId } = use(params);
+  const sp = use(searchParams);
 
-  let run: TailoringRun | null = null;
-  if (sp.run) {
-    try {
-      run = JSON.parse(Buffer.from(sp.run, "base64").toString("utf-8"));
-    } catch (err) {
-      console.error("Failed to decode run from query param", err);
+  const [run, setRun] = useState<TailoringRun | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 1. Try to load from sessionStorage
+    const storedRun = loadTailoringRun();
+    if (storedRun && storedRun.id === runId) {
+      setRun(storedRun);
+      setLoading(false);
+      return;
     }
+
+    // 2. Fall back to searchParams.run query param
+    if (sp.run) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(sp.run))));
+        setRun(decoded);
+      } catch (err) {
+        console.error("Failed to decode run from query param", err);
+      }
+    }
+    setLoading(false);
+  }, [runId, sp.run]);
+
+  if (loading) {
+    return (
+      <main style={{ padding: "40px", fontFamily: "system-ui, sans-serif" }}>
+        <h1>Comparison Export</h1>
+        <p style={{ color: "#666" }}>Loading comparison view...</p>
+      </main>
+    );
   }
 
   if (!run) {
@@ -30,10 +58,7 @@ export default async function ComparisonExportPage({
         <h1>Comparison Export</h1>
         <p style={{ color: "#666" }}>
           No run data found for <code>{runId}</code>. Pass the run JSON as a base64-encoded <code>run</code> query
-          parameter.
-        </p>
-        <p style={{ fontSize: 12, color: "#999", marginTop: 16 }}>
-          Example: <code>/export/comparison/{runId}?run={Buffer.from(JSON.stringify({})).toString("base64").slice(0, 20)}...</code>
+          parameter or make sure it is present in your active session.
         </p>
       </main>
     );
@@ -68,3 +93,4 @@ export default async function ComparisonExportPage({
     </main>
   );
 }
+
