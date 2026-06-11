@@ -83,12 +83,22 @@ export function TailorWizard() {
         signal: controller.signal,
       });
 
-      let data: { run?: unknown; error?: { message?: string } };
+      let data: { run?: unknown; error?: { message?: string } } = {};
+      const responseText = await response.text();
+
       try {
-        data = await response.json();
+        data = JSON.parse(responseText);
       } catch {
+        if (response.status === 504) {
+          throw new Error(
+            "Request timed out (504 Gateway Timeout). " +
+            "If you are deployed on Vercel's free tier, serverless functions are limited to a 10-second execution limit. " +
+            "Please try with a shorter resume/job description or redeploy to a platform without execution limits (e.g. Docker)."
+          );
+        }
         throw new Error(
-          "Could not read server response. Is the dev server running?",
+          `Server returned a non-JSON response (Status ${response.status} ${response.statusText || ""}). ` +
+          `Please check if your development server is running and healthy.`
         );
       }
 
