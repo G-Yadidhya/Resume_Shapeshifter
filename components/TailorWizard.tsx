@@ -12,6 +12,8 @@ import { ResumeInput } from "@/components/ResumeInput";
 import { ScoreCard } from "@/components/ScoreCard";
 import { SideBySideDiff } from "@/components/SideBySideDiff";
 import { PDFExportButton } from "@/components/PDFExportButton";
+import { RiskFlagBanner } from "@/components/RiskFlagBanner";
+import { GuardrailsService } from "@/lib/services/guardrails";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -51,6 +53,10 @@ export function TailorWizard() {
   const requestGenRef = useRef(0);
   const demoStartedRef = useRef(false);
   const restoredRef = useRef(false);
+
+  const guardrailsResult = run
+    ? new GuardrailsService().validate(run.resume, run.tailored, run.jobDescription)
+    : null;
 
   const runAnalyze = useCallback(async (resume: string, jd: string) => {
     const trimmedResume = resume.trim();
@@ -264,6 +270,13 @@ export function TailorWizard() {
               <PDFExportButton run={run} />
             </div>
           </div>
+
+          {guardrailsResult && (
+            <RiskFlagBanner
+              violations={guardrailsResult.blockingViolations}
+              warnings={guardrailsResult.warnings}
+            />
+          )}
 
           <JDRequirementsSummary jobDescription={run.jobDescription} />
           <ScoreCard
