@@ -116,10 +116,20 @@ export class GroqLLMClient implements LLMClient {
     messages: GroqChatMessage[],
     temperature: number,
   ): Promise<string> {
-    const maxRetries = 3;
+    const maxRetries = 6;
     const initialDelayMs = 1000;
-    const fallbackModel = "llama-3.1-8b-instant";
-    let currentModel = this.model;
+
+    const fallbackModels = [
+      "llama-3.3-70b-versatile",
+      "llama-3.1-8b-instant",
+      "gemma2-9b-it",
+      "mixtral-8x7b-32768"
+    ];
+
+    // Build unique model chain starting with the configured model
+    const modelChain = Array.from(new Set([this.model, ...fallbackModels]));
+    let currentModelIndex = 0;
+    let currentModel = modelChain[currentModelIndex];
 
     for (let attempt = 0; attempt < maxRetries; attempt += 1) {
       const controller = new AbortController();
@@ -157,9 +167,11 @@ export class GroqLLMClient implements LLMClient {
               }
             }
 
-            if (response.status === 429 && currentModel !== fallbackModel) {
-              console.warn(`Groq request rate-limited (429) for model ${currentModel}. Falling back to ${fallbackModel} immediately...`);
-              currentModel = fallbackModel;
+            if (response.status === 429 && currentModelIndex < modelChain.length - 1) {
+              currentModelIndex += 1;
+              const nextModel = modelChain[currentModelIndex];
+              console.warn(`Groq request rate-limited (429) for model ${currentModel}. Falling back to ${nextModel} immediately...`);
+              currentModel = nextModel;
               delay = 100; // Immediate retry on different model
             } else {
               console.warn(`Groq request failed with ${response.status} for model ${currentModel}. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
