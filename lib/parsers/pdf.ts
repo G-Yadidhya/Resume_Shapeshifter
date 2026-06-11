@@ -1,5 +1,11 @@
+import { DOMMatrix } from "@napi-rs/canvas";
 import path from "path";
 import { pathToFileURL } from "url";
+
+// Polyfill DOMMatrix for pdfjs-dist on Node.js
+if (typeof globalThis.DOMMatrix === "undefined") {
+  (globalThis as unknown as { DOMMatrix: unknown }).DOMMatrix = DOMMatrix;
+}
 
 export async function extractPdfText(data: Buffer): Promise<string> {
   const { PDFParse } = await import("pdf-parse");
