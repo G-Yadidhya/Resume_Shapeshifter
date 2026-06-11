@@ -45,7 +45,19 @@ export function PDFExportButton({ run }: PDFExportButtonProps) {
     } catch (err) {
       console.error("Export error", err);
       const message = err instanceof Error ? err.message : "Unknown error";
-      alert(`Export failed: ${message}`);
+      const openFallback = confirm(
+        `Server-side PDF generation failed: ${message}\n\n` +
+        `Would you like to open the print-friendly page to save it to PDF using your browser's Print feature instead?`
+      );
+      if (openFallback) {
+        try {
+          const base64Run = btoa(unescape(encodeURIComponent(JSON.stringify(run))));
+          window.open(`/export/comparison/${run.id}?run=${base64Run}`, "_blank");
+        } catch (encodeErr) {
+          console.error("Failed to encode run for fallback printing", encodeErr);
+          alert("Could not open print page due to encoding error.");
+        }
+      }
     } finally {
       setLoading(null);
       setShowConfirmModal(false);
